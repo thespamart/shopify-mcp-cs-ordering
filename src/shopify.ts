@@ -18,15 +18,17 @@ async function gql(url: string, headers: Record<string,string>, query: string, v
     headers,
     body: JSON.stringify({ query, variables })
   };
+
   const res = await fetch(url, init);
   if (res.status === 429) {
     await new Promise(r => setTimeout(r, 1200));
     const res2 = await fetch(url, init);
-    const j2 = await res2.json();
+    const j2: any = await res2.json();
     if (!res2.ok || j2.errors) throw new Error(JSON.stringify(j2.errors || j2));
     return j2.data;
   }
-  const json = await res.json();
+
+  const json: any = await res.json();
   if (!res.ok || json.errors) throw new Error(JSON.stringify(json.errors || json));
   return json.data;
 }

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import compression from "compression";
 import cors from "cors";
 import { tools } from "./tools/index.js";
@@ -8,16 +8,16 @@ app.use(cors());
 app.use(compression());
 app.use(express.json({ limit: "1mb" }));
 
-app.get("/healthz", (_req, res) => res.json({ ok: true }));
-app.get("/warm", async (_req, res) => {
+app.get("/healthz", (_req: Request, res: Response) => res.json({ ok: true }));
+
+app.get("/warm", async (_req: Request, res: Response) => {
   try { res.json({ ok: true, time: Date.now() }); }
   catch (e: any) { res.status(500).json({ ok: false, error: e?.message }); }
 });
 
-// Simple HTTP tool endpoint compatible with generic MCP clients
-app.post("/mcp", async (req, res) => {
-  const { tool, input } = req.body || {};
-  const spec = (tools as any)[tool];
+app.post("/mcp", async (req: Request, res: Response) => {
+  const { tool, input } = (req.body || {}) as { tool?: string; input?: any };
+  const spec = (tools as any)[tool as keyof typeof tools];
   if (!spec) return res.status(404).json({ error: "Tool not found", tool });
 
   try {
