@@ -1,0 +1,16 @@
+services:
+- type: web
+  name: shopify-mcp
+  env: node
+  plan: starter
+  buildCommand: npm ci && npm run build
+  startCommand: npm start
+  envVars:
+    - key: SHOPIFY_STORE
+      value: f642b5-02.myshopify.com
+    - key: SHOPIFY_ADMIN_TOKEN
+      sync: false
+    - key: SHOPIFY_STOREFRONT_TOKEN
+      sync: false
+    - key: PORT
+      value: 3000
